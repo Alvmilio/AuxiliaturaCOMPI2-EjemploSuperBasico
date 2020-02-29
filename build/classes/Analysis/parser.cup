@@ -1,0 +1,100 @@
+/*-------------------------1ra Area: Codigo de Usuario ----------------------*/
+package Analysis;
+import java_cup.runtime.*;
+import Misc.MAstNode;
+import Misc.MAst;
+import Primitives.MBoolean;
+import Primitives.MInteger;
+import Operators.Addition;
+import Operators.And;
+import Operators.Equals;
+import Statements.PrintFunction;
+import java.util.LinkedList;
+import Primitives.MString;
+import Statements.IfStatement;
+
+
+
+parser code 
+{:
+
+    public MAst ast;
+
+
+:}
+
+
+///////////Codigo para las acciones gramaticales
+action code
+{:
+
+:}
+
+
+
+
+
+/*-------------------------2ra Area: Declaraciones ----------------------*/
+
+
+
+
+
+terminal mas;
+terminal menos;
+terminal por;
+terminal div;
+terminal String entero;
+terminal String decimal;
+terminal String id;
+terminal String cadena;
+terminal pr_if;
+terminal pr_print;
+terminal and;
+terminal pr_false;
+terminal pr_true;
+terminal igualigual;
+terminal or;
+terminal para, parc, llavea, llavec;
+
+
+
+non terminal main;
+
+non terminal LinkedList<MAstNode> statements;
+
+non terminal MAstNode statement,  IfStatement, printCall, exp;
+
+
+precedence left  mas,menos;
+precedence left  por,div; 
+precedence left  and;
+precedence left  igualigual;
+
+
+
+
+start with main;
+
+main::= statements:a {:ast = new MAst(a);:};
+
+statements::= statements:a statement:b {:RESULT = a; RESULT.add(b);:}
+        | statement:a {:RESULT = new LinkedList<MAstNode>(); RESULT.add(a);:};
+
+statement::= IfStatement:a {:RESULT = a;:}
+        | printCall:a {:RESULT = a;:};
+
+IfStatement::= pr_if para exp:a parc llavea statements:b llavec {:RESULT = new IfStatement(a, b, aright+1, aleft+1);:};
+
+printCall::= pr_print para exp:a parc {:RESULT = new PrintFunction(a, aright+1, aleft+1);:};
+
+
+
+exp::=  exp:a mas exp:b {:RESULT = new Addition(a, b, bright+1, bleft+1);:}
+    | exp:a and exp:b {:RESULT = new And(a, b, bright+1, bleft+1);:}
+    | exp:a igualigual exp:b {:RESULT = new Equals(a,b, bright+1, bleft+1);:}
+    | entero:a {:RESULT = new MInteger(Integer.parseInt(a.toString()));:}
+    | pr_false: a {:RESULT = new MBoolean(false);:}
+    | pr_true:a {:RESULT = new MBoolean(true);:}
+    | cadena:a {:RESULT = new MString(a);:};
+
