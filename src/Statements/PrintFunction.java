@@ -8,6 +8,7 @@ package Statements;
 import Misc.MAst;
 import Misc.MAstNode;
 import Primitives.MString;
+import ejemplonivel0.InputPanel;
 
 /**
  *
@@ -34,7 +35,9 @@ public class PrintFunction implements MAstNode{
         Object printableType = this.printable.Execute(ast);
         if(printableType instanceof MString)
         {
-            System.out.println(((MString) printableType).getValue());
+            Object valueToPrint = ((MString) printableType).getValue();
+            System.out.println(valueToPrint);
+            InputPanel.jTextPane3.setText(InputPanel.jTextPane3.getText()+"\n"+valueToPrint);
         }
         else
         {
